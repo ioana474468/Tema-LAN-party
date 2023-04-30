@@ -1,26 +1,33 @@
 #include "list.h"
 
-void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile)
+void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile, int *numTeams)
 {
-    int numTeams,numPlayers;
-    fscanf(inputFile,"%d",&numTeams);
+    int numPlayers;
+    fscanf(inputFile,"%d",numTeams);
     ///printf("%d\n",numTeams);///
 
-    for(int i=0; i<numTeams; i++)
+    for(int i=0; i<(*numTeams); i++)
     {
         fscanf(inputFile,"%d ",&numPlayers);
-        ///printf("%d\n",numPlayers); ///
 
+        ///printf("%d\n",*numPlayers); ///
+
+        int totalPoints=0;
         char bufferTeamName[50];
         fgets(bufferTeamName,50,inputFile);
+
         ///printf("%s\n",bufferTeamName);///
         for(int j=0; j<numPlayers; j++)
         {
             addFirstInListPlayers(headListPlayers,inputFile);
+            totalPoints+=(*headListPlayers)->player->points;
         }
         addFirstInListTeams(headListTeams,bufferTeamName,*headListPlayers);
+        (*headListTeams)->teamPoints=totalPoints;
+        ///printf("%s %d\n",(*headListTeams)->teamName,(*headListTeams)->teamPoints);
     }
 }
+
 void addFirstInListPlayers(NodePlayer **headListPlayers, FILE *inputFile)
 {
     int points;
@@ -58,7 +65,14 @@ void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, NodePla
         exit(1);
     }
     int lenght=strlen(bufferTeamName);
+
     lenght--;
+    if(bufferTeamName[lenght-1]==' ')
+    {
+        lenght--;
+    }
+
+
     strncpy(newNodeTeam->teamName,bufferTeamName,lenght);
     newNodeTeam->teamName[lenght]='\0';
     newNodeTeam->headPlayer=headListPlayers;
@@ -66,36 +80,79 @@ void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, NodePla
     *headListTeams=newNodeTeam;
 
 }
+
 void displayListTeams(NodeTeam *headListTeams, FILE *outputFile)
 {
     for(NodeTeam *p=headListTeams; p!=NULL; p=p->next)
     {
-        printf("%s",p->teamName);///
+        ///printf("%s",p->teamName);
         fprintf(outputFile,"%s",p->teamName);
         if(p->next!=NULL)
         {
             fprintf(outputFile,"\n");
-            printf("\n");
+            ///printf("\n");
         }
     }
 }
-void freeListPlayers(NodePlayer *headListPlayers)
+
+int minPoints(NodeTeam *headListTeams)
 {
-    for(NodePlayer *p=headListPlayers; p!=NULL; p=p->next)
+    int Min=headListTeams->teamPoints;
+    for(NodeTeam *p=headListTeams->next; p!=NULL; p=p->next)
     {
-        free(p->player->firstName);
-        free(p->player->secondName);
-        free(p->player);
-        free(p);
+        if(Min>p->teamPoints)
+        {
+            Min=p->teamPoints;
+        }
     }
-}
-void freeListTeams(NodeTeam *headListTeams)
-{
-    for(NodeTeam *p=headListTeams; p!=NULL; p=p->next)
-    {
-        free(p->teamName);
-        free(p);
-    }
+    return Min;
 }
 
+void modifyListTeams(NodeTeam **headListTeams, int Min)
+{
+    NodeTeam *headcopy=*headListTeams;
+    if(headcopy->teamPoints==Min)
+    {
+        *headListTeams=(*headListTeams)->next;
+        //freeTeam(headcopy);
+        return;
+    }
+    else
+    {
+        for(NodeTeam *p=*headListTeams; p!=NULL; p=p->next)
+        {
+            if(p->next->teamPoints==Min)
+            {
+                headcopy=p->next;
+                p->next=p->next->next;
+                //freeTeam(headcopy);
+
+                ///p->next=aux->next;
+                ///freeTeam(p->next);
+                ///freeTeam(aux);
+                return;
+            }
+        }
+    }
+
+}
+
+void freeTeam(NodeTeam *currentTeam)
+{
+    for(NodePlayer *p=currentTeam->headPlayer; p!=(currentTeam->next)->headPlayer; p=p->next)
+    {
+        freePlayer(p);
+    }
+    free(currentTeam->teamName);
+    free(currentTeam->headPlayer);
+    free(currentTeam);
+}
+
+void freePlayer(NodePlayer *currentPlayer)
+{
+    free(currentPlayer->player->firstName);
+    free(currentPlayer->player->secondName);
+    free(currentPlayer->player);
+    free(currentPlayer);
+}
 
