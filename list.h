@@ -19,12 +19,12 @@ struct NodeTeam
 };
 typedef struct NodeTeam NodeTeam;
 
-void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile, int *numTeams);
+void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile, int *numTeams, int *numPlayers);
 void addFirstInListPlayers(NodePlayer **headListPlayers, FILE *inputFile);
 void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, NodePlayer *headListPlayers);
 void displayListTeams(NodeTeam *headListTeams, FILE *outputFile);
 int minPoints(NodeTeam *headListTeams);
-void modifyListTeams(NodeTeam **headListTeams, int Min);
-void freeTeam(NodeTeam *currentTeam);
+void modifyListTeams(NodeTeam **headListTeams, int Min, int numPlayers);
+void freeTeam(NodeTeam *currentTeam, int numPlayers);
 void freePlayer(NodePlayer *currentPlayer);
 

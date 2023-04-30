@@ -1,14 +1,13 @@
 #include "list.h"
 
-void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile, int *numTeams)
+void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile, int *numTeams, int *numPlayers)
 {
-    int numPlayers;
     fscanf(inputFile,"%d",numTeams);
-    ///printf("%d\n",numTeams);///
+    ///printf("%d\n",*numTeams);///
 
     for(int i=0; i<(*numTeams); i++)
     {
-        fscanf(inputFile,"%d ",&numPlayers);
+        fscanf(inputFile,"%d ",numPlayers);
 
         ///printf("%d\n",*numPlayers); ///
 
@@ -17,7 +16,7 @@ void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *i
         fgets(bufferTeamName,50,inputFile);
 
         ///printf("%s\n",bufferTeamName);///
-        for(int j=0; j<numPlayers; j++)
+        for(int j=0; j<*numPlayers; j++)
         {
             addFirstInListPlayers(headListPlayers,inputFile);
             totalPoints+=(*headListPlayers)->player->points;
@@ -108,13 +107,13 @@ int minPoints(NodeTeam *headListTeams)
     return Min;
 }
 
-void modifyListTeams(NodeTeam **headListTeams, int Min)
+void modifyListTeams(NodeTeam **headListTeams, int Min, int numPlayers)
 {
     NodeTeam *headcopy=*headListTeams;
     if(headcopy->teamPoints==Min)
     {
         *headListTeams=(*headListTeams)->next;
-        //freeTeam(headcopy);
+        freeTeam(headcopy,numPlayers);
         return;
     }
     else
@@ -125,21 +124,18 @@ void modifyListTeams(NodeTeam **headListTeams, int Min)
             {
                 headcopy=p->next;
                 p->next=p->next->next;
-                //freeTeam(headcopy);
+                freeTeam(headcopy,numPlayers);
 
-                ///p->next=aux->next;
-                ///freeTeam(p->next);
-                ///freeTeam(aux);
                 return;
             }
         }
     }
-
 }
 
-void freeTeam(NodeTeam *currentTeam)
+void freeTeam(NodeTeam *currentTeam, int numPlayers)
 {
-    for(NodePlayer *p=currentTeam->headPlayer; p!=(currentTeam->next)->headPlayer; p=p->next)
+    int i;
+    for(NodePlayer *p=currentTeam->headPlayer; p!=NULL, i<numPlayers; p=p->next,i++)
     {
         freePlayer(p);
     }

@@ -37,17 +37,17 @@ int main()
 
     NodePlayer *headListPlayers=NULL;
     NodeTeam *headListTeams=NULL;
-    int numTeams;
+    int numTeams,numPlayers;
 
     if((*c)==1)
     {
-        createLists(&headListPlayers,&headListTeams,inputFile,&numTeams);
+        createLists(&headListPlayers,&headListTeams,inputFile,&numTeams,&numPlayers);
         if((*(c+1))==0) displayListTeams(headListTeams,outputFile);
     }
 
     if((*(c+1))==1)
     {
-        printf("%d\n", numTeams);///
+        ///printf("%d\n", numTeams);///
         int numTeamsNeeded;
         for(int i=1; i<=numTeams; i=i*2)
         {
@@ -56,27 +56,33 @@ int main()
                 numTeamsNeeded=i;
             }
         }
-        printf("%d\n",numTeamsNeeded);///
+        ///printf("%d\n",numTeamsNeeded);///
         ///printf("%d\n",minPoints(headListTeams));
 
         while(numTeamsNeeded!=numTeams)
         {
-            modifyListTeams(&headListTeams,minPoints(headListTeams));
+            modifyListTeams(&headListTeams,minPoints(headListTeams),numPlayers);
             numTeams--;
         }
         numTeams=numTeamsNeeded;
-        fseek(outputFile,0,0);
+        ///fseek(outputFile,0,0);
         displayListTeams(headListTeams,outputFile);
 
     }
 
+    /**
+    for(NodePlayer *p=headListPlayers;p!=NULL;p=p->next)
+    {
+        printf("%s * %s -> %d\n",p->player->firstName,p->player->secondName,p->player->points);///
+    }
+**/
+
+    ///freeTeam(headListTeams,numPlayers*numTeams);
+
+
+    ///free(headListTeams);
+
     free(c);
-
-    ///freeListPlayers(headListPlayers);
-    ///freeListTeams(headListTeams);
-
-
-
     fclose(inputFile);
     fclose(outputFile);
 
