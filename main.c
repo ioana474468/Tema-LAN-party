@@ -6,7 +6,7 @@
 
 int main()
 {
-    FILE *cFile,*dataFile,*outputFile;
+    FILE *cFile,*inputFile,*outputFile;
 
     cFile=fopen("c.in.txt","rt");
     if(cFile==NULL)
@@ -25,8 +25,8 @@ int main()
 
     fclose(cFile);
 
-    dataFile=fopen("d.in.txt","rt");
-    if(dataFile==NULL)
+    inputFile=fopen("d.in.txt","rt");
+    if(inputFile==NULL)
     {
         printf("File cannot be open");
         exit(1);
@@ -41,31 +41,16 @@ int main()
 
     if((*c)==1)
     {
-        Node *headListPlayers=NULL;
+        NodePlayer *headListPlayers=NULL;
         NodeTeam *headListTeams=NULL;
-        int numTeams,numPlayers;
-        fscanf(dataFile,"%d",&numTeams);
-        printf("%d\n",numTeams);
-
-        for(int i=0; i<numTeams; i++)
-        {
-            fscanf(dataFile,"%d ",&numPlayers);
-
-            char bufferTeamName[50];
-            fgets(bufferTeamName,50,dataFile);
-            for(int j=0; j<numPlayers; j++)
-            {
-                addFirstInListPlayers(&headListPlayers,dataFile);
-            }
-            addFirstInListTeams(&headListTeams,bufferTeamName,headListPlayers);
-        }
+        createLists(&headListPlayers,&headListTeams,inputFile);
         displayListTeams(headListTeams,outputFile);
 
     }
 
     free(c);
 
-    fclose(dataFile);
+    fclose(inputFile);
     fclose(outputFile);
 
     return 0;

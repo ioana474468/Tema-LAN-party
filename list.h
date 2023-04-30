@@ -3,22 +3,23 @@
 #include <string.h>
 #include "player.h"
 
-struct Node
+struct NodePlayer
 {
     Player *player;
-    struct Node *next;
+    struct NodePlayer *next;
 };
-typedef struct Node Node;
+typedef struct NodePlayer NodePlayer;
 
 struct NodeTeam
 {
     char *teamName;
-    Node *headPlayer;
+    NodePlayer *headPlayer;
     struct NodeTeam *next;
 };
 typedef struct NodeTeam NodeTeam;
 
-void addFirstInListPlayers(Node **headListPlayers, FILE * dataFile);
-void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, Node *headListPlayers);
+void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE * inputFile);
+void addFirstInListPlayers(NodePlayer **headListPlayers, FILE * inputFile);
+void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, NodePlayer *headListPlayers);
 void displayListTeams(NodeTeam *headListTeams, FILE *outputFile);
 

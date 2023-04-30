@@ -1,32 +1,38 @@
 #include "list.h"
 
-void addFirstInListPlayers(Node **headListPlayers, FILE * dataFile)
+void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile)
 {
+    int numTeams,numPlayers;
+    fscanf(inputFile,"%d",&numTeams);
+    ///printf("%d\n",numTeams);///
 
+    for(int i=0; i<numTeams; i++)
+    {
+        fscanf(inputFile,"%d ",&numPlayers);
+        ///printf("%d\n",numPlayers); ///
+
+        char bufferTeamName[50];
+        fgets(bufferTeamName,50,inputFile);
+        ///printf("%s\n",bufferTeamName);///
+        for(int j=0; j<numPlayers; j++)
+        {
+            addFirstInListPlayers(headListPlayers,inputFile);
+        }
+        addFirstInListTeams(headListTeams,bufferTeamName,*headListPlayers);
+    }
+}
+void addFirstInListPlayers(NodePlayer **headListPlayers, FILE *inputFile)
+{
     int points;
     char bufferFirstName[15], bufferSecondName[20];
-    fscanf(dataFile,"%s %s %d",bufferFirstName,bufferSecondName,&points);
+    fscanf(inputFile,"%s %s %d",bufferFirstName,bufferSecondName,&points);
 
-    Node *newNodePlayer=(Node *)malloc(sizeof(Node));
-    if(newNodePlayer==NULL)
-    {
-        printf("Memory error");
-        exit(1);
-    }
+    NodePlayer *newNodePlayer=(NodePlayer *)malloc(sizeof(NodePlayer));
     newNodePlayer->player=(Player *)malloc(sizeof(Player));
-    if(newNodePlayer->player==NULL)
-    {
-        printf("Memory error");
-        exit(1);
-    }
     newNodePlayer->player->firstName=(char*)malloc((strlen(bufferFirstName)+1)*sizeof(char));
-    if(newNodePlayer->player->firstName==NULL)
-    {
-        printf("Memory error");
-        exit(1);
-    }
     newNodePlayer->player->secondName=(char*)malloc((strlen(bufferSecondName)+1)*sizeof(char));
-    if(newNodePlayer->player->secondName==NULL)
+
+    if(newNodePlayer==NULL || newNodePlayer->player==NULL || newNodePlayer->player->firstName==NULL || newNodePlayer->player->secondName==NULL)
     {
         printf("Memory error");
         exit(1);
@@ -35,30 +41,27 @@ void addFirstInListPlayers(Node **headListPlayers, FILE * dataFile)
     newNodePlayer->player->points=points;
     strcpy(newNodePlayer->player->firstName,bufferFirstName);
     strcpy(newNodePlayer->player->secondName,bufferSecondName);
-
-    printf("%s*%s ->",newNodePlayer->player->firstName,newNodePlayer->player->secondName);
-    printf("%d\n",newNodePlayer->player->points);
-
+    ///printf("%s*%s ->",newNodePlayer->player->firstName,newNodePlayer->player->secondName);///
+    ///printf("%d\n",newNodePlayer->player->points);///
     newNodePlayer->next=*headListPlayers;
     *headListPlayers=newNodePlayer;
 }
 
-void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, Node *headListPlayers)
+void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, NodePlayer *headListPlayers)
 {
     NodeTeam *newNodeTeam=NULL;
-
     newNodeTeam=(NodeTeam *)malloc(sizeof(NodeTeam));
     newNodeTeam->teamName=(char *)malloc((strlen(bufferTeamName)+1)*sizeof(char));
-
     if(newNodeTeam==NULL)
     {
         printf("Memory error");
         exit(1);
     }
-
-    strcpy(newNodeTeam->teamName,bufferTeamName);
+    int lenght=strlen(bufferTeamName);
+    lenght--;
+    strncpy(newNodeTeam->teamName,bufferTeamName,lenght);
+    newNodeTeam->teamName[lenght]='\0';
     newNodeTeam->headPlayer=headListPlayers;
-
     newNodeTeam->next=*headListTeams;
     *headListTeams=newNodeTeam;
 
@@ -67,12 +70,18 @@ void displayListTeams(NodeTeam *headListTeams, FILE *outputFile)
 {
     for(NodeTeam *p=headListTeams; p!=NULL; p=p->next)
     {
+        printf("%s",p->teamName);///
         fprintf(outputFile,"%s",p->teamName);
+        if(p->next!=NULL)
+        {
+            fprintf(outputFile,"\n");
+            printf("\n");
+        }
     }
 }
-void freeListPlayers(Node *headListPlayers)
+void freeListPlayers(NodePlayer *headListPlayers)
 {
-    for(Node *p=headListPlayers;p!=NULL;p=p->next)
+    for(NodePlayer *p=headListPlayers; p!=NULL; p=p->next)
     {
         free(p->player->firstName);
         free(p->player->secondName);
@@ -82,7 +91,7 @@ void freeListPlayers(Node *headListPlayers)
 }
 void freeListTeams(NodeTeam *headListTeams)
 {
-    for(NodeTeam *p=headListTeams;p!=NULL;p=p->next)
+    for(NodeTeam *p=headListTeams; p!=NULL; p=p->next)
     {
         free(p->teamName);
         free(p);
