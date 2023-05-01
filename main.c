@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-///#include "player.h"
+
 #include "list.h"
+#include "queue.h"
+#include "stack.h"
 
 int main()
 {
@@ -66,19 +68,31 @@ int main()
         }
         numTeams=numTeamsNeeded;
         ///fseek(outputFile,0,0);
-        displayListTeams(headListTeams,outputFile);
+        /**if((*(c+2))==0)**/ displayListTeams(headListTeams,outputFile);
+
+    }
+    if((*(c+2))==1)
+    {
+        Queue *QueueMatches=createQueueMatches();
+        for(NodeTeam *p=headListTeams;p!=NULL;p=(p->next)->next)
+        {
+            enQueueMatches(QueueMatches,p,p->next);
+        }
+        fprintf(outputFile,"\n\n--- ROUND NO:1\n");
+        displayQueueMatches(QueueMatches,outputFile);
+        fprintf(outputFile,"\nWINNERS OF ROUND NO:1\n");
+
 
     }
 
     ///printf("%s \n",headListTeams->teamName);
 
-
+/*
         for(NodePlayer *p=headListPlayers;p!=NULL;p=p->next)
         {
             printf("%s * %s -> %d\n",p->player->firstName,p->player->secondName,p->player->points);///
         }
-
-
+*/
     ///freeTeam(headListTeams,numPlayers*numTeams);
 
     ///free(headListTeams);
