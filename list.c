@@ -113,6 +113,8 @@ void modifyListTeams(NodeTeam **headListTeams, NodePlayer **headListPlayers, int
     if(headcopy->teamPoints==Min)
     {
         *headListTeams=(*headListTeams)->next;
+        free(headcopy->teamName);
+        free(headcopy);
     }
     else
     {
@@ -122,6 +124,8 @@ void modifyListTeams(NodeTeam **headListTeams, NodePlayer **headListPlayers, int
             {
                 headcopy=p->next;
                 p->next=p->next->next;
+                free(headcopy->teamName);
+                free(headcopy);
                 break;
             }
         }
