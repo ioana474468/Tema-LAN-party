@@ -107,14 +107,12 @@ int minPoints(NodeTeam *headListTeams)
     return Min;
 }
 
-void modifyListTeams(NodeTeam **headListTeams, int Min, int numPlayers)
+void modifyListTeams(NodeTeam **headListTeams, NodePlayer **headListPlayers, int Min, int numPlayers)
 {
     NodeTeam *headcopy=*headListTeams;
     if(headcopy->teamPoints==Min)
     {
         *headListTeams=(*headListTeams)->next;
-        freeTeam(headcopy,numPlayers);
-        return;
     }
     else
     {
@@ -124,31 +122,51 @@ void modifyListTeams(NodeTeam **headListTeams, int Min, int numPlayers)
             {
                 headcopy=p->next;
                 p->next=p->next->next;
-                freeTeam(headcopy,numPlayers);
+                break;
+            }
+        }
+    }
+    modifyListPlayers(&(*headListPlayers),headcopy->headPlayer,numPlayers);
+}
 
-                return;
+void modifyListPlayers(NodePlayer **headListPlayers, NodePlayer *headPlayer, int numPlayers)
+{
+    NodePlayer *headcopy=*headListPlayers;
+    if(headcopy==headPlayer)
+    {
+        int i=0;
+        while(i!=numPlayers)
+        {
+            headcopy=*headListPlayers;
+            *headListPlayers=(*headListPlayers)->next;
+            free(headcopy->player->firstName);
+            free(headcopy->player->secondName);
+            free(headcopy);
+            i++;
+        }
+    }
+    else
+    {
+        for(NodePlayer *p=*headListPlayers; p!=NULL; p=p->next)
+        {
+            if(p->next==headPlayer)
+            {
+                int i=0;
+                while(i!=numPlayers)
+                {
+                    headcopy=p->next;
+                    p->next=p->next->next;
+                    free(headcopy->player->firstName);
+                    free(headcopy->player->secondName);
+                    free(headcopy);
+                    i++;
+                }
+                break;
             }
         }
     }
 }
 
-void freeTeam(NodeTeam *currentTeam, int numPlayers)
-{
-    int i;
-    for(NodePlayer *p=currentTeam->headPlayer; p!=NULL, i<numPlayers; p=p->next,i++)
-    {
-        freePlayer(p);
-    }
-    free(currentTeam->teamName);
-    free(currentTeam->headPlayer);
-    free(currentTeam);
-}
 
-void freePlayer(NodePlayer *currentPlayer)
-{
-    free(currentPlayer->player->firstName);
-    free(currentPlayer->player->secondName);
-    free(currentPlayer->player);
-    free(currentPlayer);
-}
+
 

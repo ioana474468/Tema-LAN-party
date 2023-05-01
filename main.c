@@ -61,7 +61,7 @@ int main()
 
         while(numTeamsNeeded!=numTeams)
         {
-            modifyListTeams(&headListTeams,minPoints(headListTeams),numPlayers);
+            modifyListTeams(&headListTeams,&headListPlayers,minPoints(headListTeams),numPlayers);
             numTeams--;
         }
         numTeams=numTeamsNeeded;
@@ -70,15 +70,16 @@ int main()
 
     }
 
-    /**
-    for(NodePlayer *p=headListPlayers;p!=NULL;p=p->next)
-    {
-        printf("%s * %s -> %d\n",p->player->firstName,p->player->secondName,p->player->points);///
-    }
-**/
+    ///printf("%s \n",headListTeams->teamName);
+
+
+        for(NodePlayer *p=headListPlayers;p!=NULL;p=p->next)
+        {
+            printf("%s * %s -> %d\n",p->player->firstName,p->player->secondName,p->player->points);///
+        }
+
 
     ///freeTeam(headListTeams,numPlayers*numTeams);
-
 
     ///free(headListTeams);
 

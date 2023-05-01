@@ -24,7 +24,8 @@ void addFirstInListPlayers(NodePlayer **headListPlayers, FILE *inputFile);
 void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, NodePlayer *headListPlayers);
 void displayListTeams(NodeTeam *headListTeams, FILE *outputFile);
 int minPoints(NodeTeam *headListTeams);
-void modifyListTeams(NodeTeam **headListTeams, int Min, int numPlayers);
-void freeTeam(NodeTeam *currentTeam, int numPlayers);
-void freePlayer(NodePlayer *currentPlayer);
+void modifyListTeams(NodeTeam **headListTeams, NodePlayer **headListPlayers, int Min, int numPlayers);
+
+void modifyListPlayers(NodePlayer **headListPlayers, NodePlayer *headPlayer, int numPlayers);
+
 
