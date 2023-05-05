@@ -74,87 +74,26 @@ int main()
 
     if((*(c+2))==1)
     {
-        Queue *QueueMatches=createQueueMatches();
+
         NodeTeam *topWinners=NULL, *topLosers=NULL;
-
         int roundNum=1;
-        for(NodeTeam *p=headListTeams; p!=NULL; p=(p->next)->next)
-        {
-            enQueueMatches(QueueMatches,p,p->next);
-        }
+        topWinners=headListTeams;
 
-        fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
-        displayQueueMatches(QueueMatches,outputFile);
-        playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
-        fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
-        roundNum++;
-        displayStack(topWinners,outputFile);
-        while(topLosers!=NULL)
-        {
-            modifyListPlayers(&headListPlayers,topLosers->headPlayer,numPlayers);
-            pop(&topLosers);
-        }
-        deleteQueue(QueueMatches);
-///
-
-
-        numTeams/=2;
-        printf("\n%d\n",numTeams);
-
-        for(NodeTeam *p=topWinners; p!=NULL; p=(p->next)->next)
-        {
-            enQueueMatches(QueueMatches,p,p->next);
-        }
-
-
-        ///printf("\n%s %.2f %s\n",topWinners->teamName,topWinners->teamPoints,topWinners->headPlayer->player->firstName);
-
-
-        fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
-        displayQueueMatches(QueueMatches,outputFile);
-        topWinners=NULL;
-        playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
-        fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
-
-        roundNum++;
-        displayStack(topWinners,outputFile);
-        fprintf(outputFile,"\n\n\n\n");
-        displayStack(topLosers,outputFile);
-        /*
-        for(int i=0;i<numTeams/2;i++)
-        {
-            NodeTeam *t1,*t2;
-            t1=topWinners;
-            pop(&topWinners);
-            t2=topWinners;
-            pop(&topWinners);
-            enQueueMatches(QueueMatches,t1,t2);
-        }*/
-        /*
-                    while(topLosers!=NULL)
-                    {
-                        modifyListPlayers(&headListPlayers,topLosers->headPlayer,numPlayers);
-                        pop(&topLosers);
-                    }
-
-                    deleteQueue(QueueMatches);*/
-
-
-
-        /*
         while(numTeams!=1)
         {
+            Queue *QueueMatches=createQueueMatches();
+            printf("\n%d\n",numTeams); ///
             numTeams/=2;
+
             for(NodeTeam *p=topWinners; p!=NULL; p=(p->next)->next)
             {
                 enQueueMatches(QueueMatches,p,p->next);
             }
-            while(topWinners!=NULL)
-            {
-                pop(&topWinners);
-            }
             fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
             displayQueueMatches(QueueMatches,outputFile);
+
+            topWinners=NULL;
+
             playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
             fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
             roundNum++;
@@ -166,12 +105,34 @@ int main()
             }
             deleteQueue(QueueMatches);
         }
-        */
-
-
-
-
     }
+
+
+
+    /*
+
+    for(NodeTeam *p=topWinners; p!=NULL; p=(p->next)->next)
+    {
+        enQueueMatches(QueueMatches,p,p->next);
+    }
+
+
+    ///printf("\n%s %.2f %s\n",topWinners->teamName,topWinners->teamPoints,topWinners->headPlayer->player->firstName);
+
+
+    fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
+    displayQueueMatches(QueueMatches,outputFile);
+    topWinners=NULL;
+    playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
+    fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
+
+    roundNum++;
+    displayStack(topWinners,outputFile);
+    fprintf(outputFile,"\n\n\n\n");
+    ///displayStack(topLosers,outputFile);
+    */
+
+
 
 
 
