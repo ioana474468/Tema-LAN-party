@@ -11,10 +11,25 @@ typedef struct NodePlayer NodePlayer;
 struct NodeTeam
 {
     char *teamName;
-    int teamPoints;
+    float teamPoints;
     NodePlayer *headPlayer;
     struct NodeTeam *next;
 };
 typedef struct NodeTeam NodeTeam;
+
+struct Match
+{
+    NodeTeam *TeamOne, *TeamTwo;
+    struct Match *next;
+
+};
+typedef struct Match Match;
+
+struct Queue
+{
+    Match *front,*rear;
+};
+typedef struct Queue Queue;
+
 
 #endif /* NODES_H */

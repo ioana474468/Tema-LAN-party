@@ -11,7 +11,7 @@ void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *i
 
         ///printf("%d\n",*numPlayers); ///
 
-        int totalPoints=0;
+        int  totalPoints=0;
         char bufferTeamName[50];
         fgets(bufferTeamName,50,inputFile);
 
@@ -22,8 +22,9 @@ void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *i
             totalPoints+=(*headListPlayers)->player->points;
         }
         addFirstInListTeams(headListTeams,bufferTeamName,*headListPlayers);
-        (*headListTeams)->teamPoints=totalPoints;
-        ///printf("%s %d\n",(*headListTeams)->teamName,(*headListTeams)->teamPoints);
+
+        (*headListTeams)->teamPoints=(float)totalPoints/(*numPlayers);
+        /// printf("%s %.2f\n",(*headListTeams)->teamName,(*headListTeams)->teamPoints); ///
     }
 }
 
@@ -94,9 +95,9 @@ void displayListTeams(NodeTeam *headListTeams, FILE *outputFile)
     }
 }
 
-int minPoints(NodeTeam *headListTeams)
+float minPoints(NodeTeam *headListTeams)
 {
-    int Min=headListTeams->teamPoints;
+    float Min=headListTeams->teamPoints;
     for(NodeTeam *p=headListTeams->next; p!=NULL; p=p->next)
     {
         if(Min>p->teamPoints)
@@ -107,14 +108,12 @@ int minPoints(NodeTeam *headListTeams)
     return Min;
 }
 
-void modifyListTeams(NodeTeam **headListTeams, NodePlayer **headListPlayers, int Min, int numPlayers)
+void searchTeamWithLowestPoints(NodeTeam **headListTeams, NodePlayer **headListPlayers, float Min, int numPlayers)
 {
     NodeTeam *headcopy=*headListTeams;
     if(headcopy->teamPoints==Min)
     {
         *headListTeams=(*headListTeams)->next;
-        free(headcopy->teamName);
-        free(headcopy);
     }
     else
     {
@@ -124,13 +123,13 @@ void modifyListTeams(NodeTeam **headListTeams, NodePlayer **headListPlayers, int
             {
                 headcopy=p->next;
                 p->next=p->next->next;
-                free(headcopy->teamName);
-                free(headcopy);
                 break;
             }
         }
     }
     modifyListPlayers(&(*headListPlayers),headcopy->headPlayer,numPlayers);
+    free(headcopy->teamName);
+    free(headcopy);
 }
 
 void modifyListPlayers(NodePlayer **headListPlayers, NodePlayer *headPlayer, int numPlayers)

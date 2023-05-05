@@ -17,8 +17,10 @@ Queue *createQueueMatches()
 void enQueueMatches(Queue *QueueMatches, NodeTeam *firstTeam, NodeTeam *secondTeam)
 {
     Match *newMatch=(Match *)malloc(sizeof(Match));
+
     newMatch->TeamOne=firstTeam;
     newMatch->TeamTwo=secondTeam;
+
     newMatch->next=NULL;
     if(QueueMatches->rear==NULL)
     {
@@ -34,18 +36,29 @@ void enQueueMatches(Queue *QueueMatches, NodeTeam *firstTeam, NodeTeam *secondTe
         QueueMatches->front=QueueMatches->rear;
     }
 }
+void deleteQueue(Queue* q)
+{
+    Match* temp;
+    while (q->front!=NULL)
+    {
+        temp=q->front;
+        q->front=q->front->next;
+        free(temp);
+    }
+    free(q);
+}
 
 void displayQueueMatches(Queue *QueueMatches, FILE *outputFile)
 {
-    for(Match *p=QueueMatches->front;p!=NULL;p=p->next)
+    for(Match *p=QueueMatches->front; p!=NULL; p=p->next)
     {
         fprintf(outputFile,"%s",p->TeamOne->teamName);
-        for(int i=0;i<33-strlen(p->TeamOne->teamName);i++)
+        for(int i=0; i<33-strlen(p->TeamOne->teamName); i++)
         {
             fprintf(outputFile," ");
         }
         fprintf(outputFile,"-");
-        for(int i=0;i<33-strlen(p->TeamTwo->teamName);i++)
+        for(int i=0; i<33-strlen(p->TeamTwo->teamName); i++)
         {
             fprintf(outputFile," ");
         }
@@ -53,31 +66,4 @@ void displayQueueMatches(Queue *QueueMatches, FILE *outputFile)
     }
 }
 
-/**
 
-
-Data deQueue(Queue*q) {
-	Node* aux; Data d;
-	if (isEmpty(q)) return INT_MIN;
-
-	aux=q->front;
-	d=aux->val;
-	q->front=(q->front)->next;
-	free(aux);
-	return d;
-}
-
-int isEmpty(Queue*q){
-	return (q->front==NULL);
-}
-
-void deleteQueue(Queue*q){
-	Node* aux;
-	while (!isEmpty(q)){
-		aux=q->front;
-		q->front=q->front->next;
-		free(aux);
-	}
-	free(q);
-}
-**/

@@ -63,7 +63,7 @@ int main()
 
         while(numTeamsNeeded!=numTeams)
         {
-            modifyListTeams(&headListTeams,&headListPlayers,minPoints(headListTeams),numPlayers);
+            searchTeamWithLowestPoints(&headListTeams,&headListPlayers,minPoints(headListTeams),numPlayers);
             numTeams--;
         }
         numTeams=numTeamsNeeded;
@@ -71,28 +71,118 @@ int main()
         /**if((*(c+2))==0)**/ displayListTeams(headListTeams,outputFile);
 
     }
+
     if((*(c+2))==1)
     {
         Queue *QueueMatches=createQueueMatches();
-        for(NodeTeam *p=headListTeams;p!=NULL;p=(p->next)->next)
+        NodeTeam *topWinners=NULL, *topLosers=NULL;
+
+        int roundNum=1;
+        for(NodeTeam *p=headListTeams; p!=NULL; p=(p->next)->next)
         {
             enQueueMatches(QueueMatches,p,p->next);
         }
-        fprintf(outputFile,"\n\n--- ROUND NO:1\n");
+
+        fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
         displayQueueMatches(QueueMatches,outputFile);
-        fprintf(outputFile,"\nWINNERS OF ROUND NO:1\n");
+        playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
+        fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
+        roundNum++;
+        displayStack(topWinners,outputFile);
+        while(topLosers!=NULL)
+        {
+            modifyListPlayers(&headListPlayers,topLosers->headPlayer,numPlayers);
+            pop(&topLosers);
+        }
+        deleteQueue(QueueMatches);
+///
+
+
+        numTeams/=2;
+        printf("\n%d\n",numTeams);
+
+        for(NodeTeam *p=topWinners; p!=NULL; p=(p->next)->next)
+        {
+            enQueueMatches(QueueMatches,p,p->next);
+        }
+
+
+        ///printf("\n%s %.2f %s\n",topWinners->teamName,topWinners->teamPoints,topWinners->headPlayer->player->firstName);
+
+
+        fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
+        displayQueueMatches(QueueMatches,outputFile);
+        topWinners=NULL;
+        playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
+        fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
+
+        roundNum++;
+        displayStack(topWinners,outputFile);
+        fprintf(outputFile,"\n\n\n\n");
+        displayStack(topLosers,outputFile);
+        /*
+        for(int i=0;i<numTeams/2;i++)
+        {
+            NodeTeam *t1,*t2;
+            t1=topWinners;
+            pop(&topWinners);
+            t2=topWinners;
+            pop(&topWinners);
+            enQueueMatches(QueueMatches,t1,t2);
+        }*/
+        /*
+                    while(topLosers!=NULL)
+                    {
+                        modifyListPlayers(&headListPlayers,topLosers->headPlayer,numPlayers);
+                        pop(&topLosers);
+                    }
+
+                    deleteQueue(QueueMatches);*/
+
+
+
+        /*
+        while(numTeams!=1)
+        {
+            numTeams/=2;
+            for(NodeTeam *p=topWinners; p!=NULL; p=(p->next)->next)
+            {
+                enQueueMatches(QueueMatches,p,p->next);
+            }
+            while(topWinners!=NULL)
+            {
+                pop(&topWinners);
+            }
+            fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
+            displayQueueMatches(QueueMatches,outputFile);
+            playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
+            fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
+            roundNum++;
+            displayStack(topWinners,outputFile);
+            while(topLosers!=NULL)
+            {
+                modifyListPlayers(&headListPlayers,topLosers->headPlayer,numPlayers);
+                pop(&topLosers);
+            }
+            deleteQueue(QueueMatches);
+        }
+        */
+
+
 
 
     }
 
-    ///printf("%s \n",headListTeams->teamName);
 
-/*
-        for(NodePlayer *p=headListPlayers;p!=NULL;p=p->next)
-        {
-            printf("%s * %s -> %d\n",p->player->firstName,p->player->secondName,p->player->points);///
-        }
-*/
+
+
+
+    /*
+            for(NodePlayer *p=headListPlayers;p!=NULL;p=p->next)
+            {
+                printf("%s * %s -> %d\n",p->player->firstName,p->player->secondName,p->player->points);///
+            }
+    */
     ///freeTeam(headListTeams,numPlayers*numTeams);
 
     ///free(headListTeams);
