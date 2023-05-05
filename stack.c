@@ -5,7 +5,7 @@ void playMatches(Queue *QueueMatches,NodeTeam **topWinners,NodeTeam **topLosers,
 {
     for(Match *p=QueueMatches->front; p!=NULL; p=p->next)
     {
-        if(p->TeamOne->teamPoints>=p->TeamTwo->teamPoints)
+        if(p->TeamOne->teamPoints>p->TeamTwo->teamPoints)
         {
             push(&(*topWinners),p->TeamOne);
             p->TeamOne->teamPoints++;
