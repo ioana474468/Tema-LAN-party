@@ -65,8 +65,10 @@ void addFirstInListTeams(NodeTeam **headListTeams, char *bufferTeamName, NodePla
         exit(1);
     }
     int lenght=strlen(bufferTeamName);
-
-    lenght--;
+    if(bufferTeamName[lenght-1]=='\n')
+    {
+        lenght--;
+    }
     if(bufferTeamName[lenght-1]==' ')
     {
         lenght--;

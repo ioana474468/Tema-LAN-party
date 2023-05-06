@@ -5,6 +5,7 @@
 #include "list.h"
 #include "queue.h"
 #include "stack.h"
+#include "BST.h"
 
 int main()
 {
@@ -71,7 +72,7 @@ int main()
         /**if((*(c+2))==0)**/ displayListTeams(headListTeams,outputFile);
 
     }
-
+    NodeTeam *top8=NULL;
     if((*(c+2))==1)
     {
 
@@ -82,9 +83,15 @@ int main()
         while(numTeams!=1)
         {
             Queue *QueueMatches=createQueueMatches();
-            printf("\n%d\n",numTeams); ///
+            if(numTeams==8)
+            {
+                for(NodeTeam *p=topWinners; p!=NULL; p=p->next)
+                {
+                    addFirstInListTeams(&top8,p->teamName,p->headPlayer);
+                    top8->teamPoints=p->teamPoints;
+                }
+            }
             numTeams/=2;
-
             for(NodeTeam *p=topWinners; p!=NULL; p=(p->next)->next)
             {
                 enQueueMatches(QueueMatches,p,p->next);
@@ -105,32 +112,23 @@ int main()
             }
             deleteQueue(QueueMatches);
         }
+
     }
 
-
-
-    /*
-
-    for(NodeTeam *p=topWinners; p!=NULL; p=(p->next)->next)
+    if((*(c+3))==1)
     {
-        enQueueMatches(QueueMatches,p,p->next);
+        NodeBST *rootBST=NULL;
+
+        for(int i=0;i<8;i++)
+        {
+            rootBST=insertBST(rootBST,top8->teamName,top8->teamPoints,top8->headPlayer);
+            pop(&top8);
+        }
+        fprintf(outputFile,"\n\nTOP 8 TEAMS:\n");
+        int numNodesPrinted=0;
+        reverseInorder(rootBST,outputFile,&numNodesPrinted);
     }
 
-
-    ///printf("\n%s %.2f %s\n",topWinners->teamName,topWinners->teamPoints,topWinners->headPlayer->player->firstName);
-
-
-    fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
-    displayQueueMatches(QueueMatches,outputFile);
-    topWinners=NULL;
-    playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
-    fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
-
-    roundNum++;
-    displayStack(topWinners,outputFile);
-    fprintf(outputFile,"\n\n\n\n");
-    ///displayStack(topLosers,outputFile);
-    */
 
 
 

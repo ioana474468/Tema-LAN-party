@@ -31,5 +31,12 @@ struct Queue
 };
 typedef struct Queue Queue;
 
+struct NodeBST
+{
+    NodeTeam *team;
+    struct NodeBST *left, *right;
+};
+typedef struct NodeBST NodeBST;
+
 
 #endif /* NODES_H */
