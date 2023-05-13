@@ -17,10 +17,13 @@ Queue *createQueueMatches()
 void enQueueMatches(Queue *QueueMatches, NodeTeam *firstTeam, NodeTeam *secondTeam)
 {
     Match *newMatch=(Match *)malloc(sizeof(Match));
-
+    if(newMatch==NULL)
+    {
+        printf("Memory error");
+        exit(1);
+    }
     newMatch->TeamOne=firstTeam;
     newMatch->TeamTwo=secondTeam;
-
     newMatch->next=NULL;
     if(QueueMatches->rear==NULL)
     {

@@ -8,14 +8,14 @@ void playMatches(Queue *QueueMatches,NodeTeam **topWinners,NodeTeam **topLosers,
         if(p->TeamOne->teamPoints>p->TeamTwo->teamPoints)
         {
             push(&(*topWinners),p->TeamOne);
+            push(&(*topLosers),p->TeamTwo);
             p->TeamOne->teamPoints++;
             addPointToPlayers(p->TeamOne,numPlayers);
-            push(&(*topLosers),p->TeamTwo);
         }
         else
         {
-            push(&(*topLosers),p->TeamOne);
             push(&(*topWinners),p->TeamTwo);
+            push(&(*topLosers),p->TeamOne);
             p->TeamTwo->teamPoints++;
             addPointToPlayers(p->TeamTwo,numPlayers);
         }
@@ -34,6 +34,11 @@ void addPointToPlayers(NodeTeam *currentTeam, int numPlayers)
 void push(NodeTeam **top, NodeTeam *currentTeam)
 {
     NodeTeam* newNode=(NodeTeam*)malloc(sizeof(NodeTeam));
+    if(newNode==NULL)
+    {
+        printf("Memory error");
+        exit(1);
+    }
     newNode=currentTeam;
     newNode->next=*top;
     *top=newNode;

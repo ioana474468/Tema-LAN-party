@@ -6,6 +6,7 @@
 #include "queue.h"
 #include "stack.h"
 #include "BST.h"
+#include "AVL.h"
 
 int main()
 {
@@ -50,7 +51,6 @@ int main()
 
     if((*(c+1))==1)
     {
-        ///printf("%d\n", numTeams);///
         int numTeamsNeeded;
         for(int i=1; i<=numTeams; i=i*2)
         {
@@ -59,27 +59,20 @@ int main()
                 numTeamsNeeded=i;
             }
         }
-        ///printf("%d\n",numTeamsNeeded);///
-        ///printf("%d\n",minPoints(headListTeams));
-
         while(numTeamsNeeded!=numTeams)
         {
             searchTeamWithLowestPoints(&headListTeams,&headListPlayers,minPoints(headListTeams),numPlayers);
             numTeams--;
         }
         numTeams=numTeamsNeeded;
-        ///fseek(outputFile,0,0);
-        /**if((*(c+2))==0)**/ displayListTeams(headListTeams,outputFile);
-
+        displayListTeams(headListTeams,outputFile);
     }
     NodeTeam *top8=NULL;
     if((*(c+2))==1)
     {
-
         NodeTeam *topWinners=NULL, *topLosers=NULL;
         int roundNum=1;
         topWinners=headListTeams;
-
         while(numTeams!=1)
         {
             Queue *QueueMatches=createQueueMatches();
@@ -98,9 +91,7 @@ int main()
             }
             fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
             displayQueueMatches(QueueMatches,outputFile);
-
             topWinners=NULL;
-
             playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
             fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
             roundNum++;
@@ -115,13 +106,15 @@ int main()
 
     }
 
+    NodeBST *rootBST=NULL;
+
     if((*(c+3))==1)
     {
-        NodeBST *rootBST=NULL;
 
-        for(int i=0;i<8;i++)
+
+        for(int i=0; i<8; i++)
         {
-            rootBST=insertBST(rootBST,top8->teamName,top8->teamPoints,top8->headPlayer);
+            rootBST=insertNodeBST(rootBST,top8->teamName,top8->teamPoints,top8->headPlayer);
             pop(&top8);
         }
         fprintf(outputFile,"\n\nTOP 8 TEAMS:\n");
@@ -129,19 +122,45 @@ int main()
         reverseInorder(rootBST,outputFile,&numNodesPrinted);
     }
 
+    if((*(c+4))==1)
+    {
+        NodeTeam *v;
+        int index=0;
+
+        v=(NodeTeam *)malloc(8*sizeof(NodeTeam));
+
+        addNodesInArray(v,rootBST, &index);
+        printf("\n");
+
+        for(int i=0; i<8; i++)
+        {
+            printf("Team: %s  Points: %.2f\n", (v+i)->teamName, (v+i)->teamPoints);
+        }
+        NodeBST *rootAVL=NULL;
+
+        /*
+        strcpy(rootAVL->team->teamName,(v+4)->teamName);
+
+        printf("\n");
+        printf("radacina: %s  pct: %.2f\n",rootAVL->team->teamName,rootAVL->team->teamPoints);
+        */
+        printf("\n");
+/*
+        for(int i=0; i<8; i++)
+        {
+
+            insertNodeAVL(rootAVL,(v+i)->teamName,(v+i)->teamPoints,(v+i)->headPlayer);
+        }
+        ///displayLevelTwo(rootAVL);
+        preorder(rootAVL);
+*/
 
 
 
+    }
 
 
 
-
-    /*
-            for(NodePlayer *p=headListPlayers;p!=NULL;p=p->next)
-            {
-                printf("%s * %s -> %d\n",p->player->firstName,p->player->secondName,p->player->points);///
-            }
-    */
     ///freeTeam(headListTeams,numPlayers*numTeams);
 
     ///free(headListTeams);

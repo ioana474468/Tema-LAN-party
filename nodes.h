@@ -34,9 +34,13 @@ typedef struct Queue Queue;
 struct NodeBST
 {
     NodeTeam *team;
+    int height;
     struct NodeBST *left, *right;
 };
 typedef struct NodeBST NodeBST;
+
+
+
 
 
 #endif /* NODES_H */
