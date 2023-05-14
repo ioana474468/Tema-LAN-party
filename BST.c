@@ -1,15 +1,7 @@
 #include "BST.h"
 #include "stack.h"
 
-int height(NodeBST *root)
-{
-    int hs, hd;
-    if(root==NULL) return -1;
-    hs=height(root->left);
-    hd=height(root->right);
-    if(hs>hd) return 1+hs;
-    else return 1+hd;
-}
+
 
 NodeBST* newNodeBST(char* tName, float tPoints, NodePlayer *hPlayer)
 {
@@ -35,7 +27,7 @@ NodeBST* newNodeBST(char* tName, float tPoints, NodePlayer *hPlayer)
     strcpy(node->team->teamName,tName);
     node->team->headPlayer=hPlayer;
     node->left=node->right=NULL;
-    node->height=height(node);
+    node->height=1;
     return node;
 }
 
@@ -64,7 +56,7 @@ NodeBST* insertNodeBST(NodeBST* node, char* tName, float tPoints, NodePlayer *hP
             node->right=insertNodeBST(node->right,tName,tPoints,hPlayer);
         }
     }
-    node->height = height(node);
+
     return node;
 }
 
@@ -86,6 +78,15 @@ void reverseInorder(NodeBST *root,FILE *outputFile, int *numNodesPrinted)
         }
         reverseInorder(root->left,outputFile,numNodesPrinted);
 
+    }
+}
+void freeTree(NodeBST *root)
+{
+    if(root!=NULL)
+    {
+        freeTree(root->left);
+        freeTree(root->right);
+        free(root);
     }
 }
 

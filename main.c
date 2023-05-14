@@ -91,6 +91,10 @@ int main()
             }
             fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
             displayQueueMatches(QueueMatches,outputFile);
+            while(topWinners!=NULL)
+            {
+                pop(&topWinners);
+            }
             topWinners=NULL;
             playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
             fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
@@ -103,6 +107,8 @@ int main()
             }
             deleteQueue(QueueMatches);
         }
+        free(topWinners);
+        free(topLosers);
 
     }
 
@@ -110,13 +116,12 @@ int main()
 
     if((*(c+3))==1)
     {
-
-
         for(int i=0; i<8; i++)
         {
             rootBST=insertNodeBST(rootBST,top8->teamName,top8->teamPoints,top8->headPlayer);
             pop(&top8);
         }
+        free(top8);
         fprintf(outputFile,"\n\nTOP 8 TEAMS:\n");
         int numNodesPrinted=0;
         reverseInorder(rootBST,outputFile,&numNodesPrinted);
@@ -126,45 +131,32 @@ int main()
     {
         NodeTeam *v;
         int index=0;
-
         v=(NodeTeam *)malloc(8*sizeof(NodeTeam));
-
         addNodesInArray(v,rootBST, &index);
-        printf("\n");
-
-        for(int i=0; i<8; i++)
-        {
-            printf("Team: %s  Points: %.2f\n", (v+i)->teamName, (v+i)->teamPoints);
-        }
         NodeBST *rootAVL=NULL;
-
-        /*
-        strcpy(rootAVL->team->teamName,(v+4)->teamName);
-
-        printf("\n");
-        printf("radacina: %s  pct: %.2f\n",rootAVL->team->teamName,rootAVL->team->teamPoints);
-        */
-        printf("\n");
-/*
         for(int i=0; i<8; i++)
         {
-
-            insertNodeAVL(rootAVL,(v+i)->teamName,(v+i)->teamPoints,(v+i)->headPlayer);
+            rootAVL=insertNodeAVL(rootAVL,(v+i)->teamName,(v+i)->teamPoints,(v+i)->headPlayer);
         }
-        ///displayLevelTwo(rootAVL);
-        preorder(rootAVL);
-*/
-
-
-
+        free(v);
+        fprintf(outputFile,"\n\nTHE LEVEL 2 TEAMS ARE: \n");
+        int nr=0;
+        printLevel(rootAVL,3,outputFile,&nr);
+        freeTree(rootAVL);
     }
 
 
 
-    ///freeTeam(headListTeams,numPlayers*numTeams);
-
-    ///free(headListTeams);
-
+    for(int i=0; i<numPlayers; i++)
+    {
+        NodePlayer *p=headListPlayers;
+        headListPlayers=headListPlayers->next;
+        free(p->player->firstName);
+        free(p->player->secondName);
+        free(p);
+    }
+    free(headListTeams);
+    freeTree(rootBST);
     free(c);
     fclose(inputFile);
     fclose(outputFile);

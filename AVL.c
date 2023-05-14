@@ -1,68 +1,57 @@
 #include "AVL.h"
 #include "BST.h"
 
-
 void addNodesInArray(NodeTeam *v, NodeBST *root, int *i)
 {
     if(root!=NULL)
     {
-        addNodesInArray(v,root->left, i);
-        printf("%s %.2f\n", root->team->teamName, root->team->teamPoints);
+        addNodesInArray(v,root->right, i);
 
         (v+(*i))->teamPoints=root->team->teamPoints;
         (v+(*i))->headPlayer=root->team->headPlayer;
         (v+(*i))->teamName=(char*)malloc((strlen(root->team->teamName)+1)*sizeof(char));
         if((v+(*i))->teamName==NULL)
         {
-            printf("memory error");
+            printf("Memory error");
             exit(1);
         }
         strcpy((v+(*i))->teamName,root->team->teamName);
         (*i)++;
-
-        addNodesInArray(v,root->right, i);
+        addNodesInArray(v,root->left, i);
     }
 }
 
 
-
-int Max(int a, int b)
-{
-    if(a>b) return a;
-    else return b;
-
-}
 int nodeHeight(NodeBST *root)
 {
-    if(root==NULL) return -1;
+    if(root==NULL) return 0;
     else return root->height;
+}
+int updateHeight(NodeBST *root)
+{
+    int leftH=nodeHeight(root->left);
+    int rightH=nodeHeight(root->right);
+    if(leftH>rightH) return 1+leftH;
+    else return 1+rightH;
 }
 
 NodeBST *RightRotation(NodeBST *z)
 {
     NodeBST *y=z->left;
-    NodeBST *T3=y->right;
-
+    z->left=y->right;
     y->right=z;
-    z->left=T3;
-
-    z->height=Max(nodeHeight(z->left),nodeHeight(z->right))+1;
-    y->height=Max(nodeHeight(y->left),nodeHeight(y->right))+1;
-
+    z->height=updateHeight(z);
+    y->height=updateHeight(y);
     return y;
 }
 
 NodeBST *LeftRotation(NodeBST *z)
 {
     NodeBST *y=z->right;
-    NodeBST *T2=y->left;
-
+    z->right=y->left;
     y->left=z;
-    z->right=T2;
-
-    z->height=Max(nodeHeight(z->left),nodeHeight(z->right))+1;
-    y->height=Max(nodeHeight(y->left),nodeHeight(y->right))+1;
-
+    z->height=updateHeight(z);
+    y->height=updateHeight(y);
     return y;
 }
 
@@ -78,33 +67,71 @@ NodeBST *RLRotation(NodeBST *z)
     return LeftRotation(z);
 }
 
-NodeBST *insertNodeAVL(NodeBST *node, char *tName, int tPoints, NodePlayer *hPlayer) ///
+NodeBST *insertNodeAVL(NodeBST *node, char *tName, float tPoints, NodePlayer *hPlayer) ///
 {
-    insertNodeBST(node,tName,tPoints,hPlayer);
+    if(node==NULL)
+    {
+        return newNodeBST(tName,tPoints,hPlayer);
+    }
+    if(tPoints<node->team->teamPoints)
+    {
+        node->left=insertNodeAVL(node->left,tName,tPoints,hPlayer);
+    }
+    else if(tPoints>node->team->teamPoints)
+    {
+        node->right=insertNodeAVL(node->right,tName,tPoints,hPlayer);
+    }
+    else if(tPoints==node->team->teamPoints)
+    {
+        if(strcmp(tName,node->team->teamName)<0)
+        {
+            node->left=insertNodeAVL(node->left,tName,tPoints,hPlayer);
+        }
+        else if(strcmp(tName,node->team->teamName)>0)
+        {
+            node->right=insertNodeAVL(node->right,tName,tPoints,hPlayer);
+        }
+    }
+    else
+    {
+        return node;
+    }
 
 
-    node->height=1+Max(nodeHeight(node->left),nodeHeight(node->right));
-
+    node->height=updateHeight(node);
     int k=nodeHeight(node->left)-nodeHeight(node->right);
 
-    if(k>1 && tPoints<node->left->team->teamPoints) return RightRotation(node); ///LL
-
+    /*
+    if(k>1 && tPoints<node->left->team->teamPoints ) return RightRotation(node); ///LL
     if(k<-1 && tPoints>node->right->team->teamPoints) return LeftRotation(node); ///RR
+    if(k>1 && tPoints>node->left->team->teamPoints ) return LRRotation(node); ///LR
+    if(k<-1 && tPoints<node->right->team->teamPoints ) return RLRotation(node); ///RL
+        */
 
-    if(k>1 && tPoints>node->left->team->teamPoints) return LRRotation(node); ///LR
-
-    if(k<-1 && tPoints<node->right->team->teamPoints) return RLRotation(node); ///RL
+    if(k>1 && (tPoints<node->left->team->teamPoints || (tPoints==node->left->team->teamPoints && strcmp(tName,node->team->teamName)<0))) return RightRotation(node); ///LL
+    if(k<-1 && (tPoints>node->right->team->teamPoints || (tPoints==node->right->team->teamPoints && strcmp(tName,node->team->teamName)>0))) return LeftRotation(node); ///RR
+    if(k>1 && (tPoints>node->left->team->teamPoints || (tPoints==node->left->team->teamPoints && strcmp(tName,node->team->teamName)>0))) return LRRotation(node); ///LR
+    if(k<-1 && (tPoints<node->right->team->teamPoints || (tPoints==node->right->team->teamPoints && strcmp(tName,node->team->teamName)<0))) return RLRotation(node); ///RL
 
     return node;
 }
 
-void preorder(NodeBST *root)
+
+void printLevel(NodeBST* root, int level,FILE * outputFile, int *numNodesPrinted)
 {
-    if(root!=NULL)
+    if(root==NULL) return;
+    if(level==1)
     {
-        printf("%.2f ",root->team->teamPoints);
-        preorder(root->left);
-        preorder(root->right);
-        printf("\n");
+        fprintf(outputFile,"%s",root->team->teamName);
+        if(*numNodesPrinted<3)
+        {
+            fprintf(outputFile,"\n");
+            (*numNodesPrinted)++;
+        }
+    }
+    else if(level>1)
+    {
+        printLevel(root->right,level-1,outputFile,numNodesPrinted);
+        printLevel(root->left, level-1,outputFile,numNodesPrinted);
     }
 }
