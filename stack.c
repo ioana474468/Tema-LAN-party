@@ -7,15 +7,23 @@ void playMatches(Queue *QueueMatches,NodeTeam **topWinners,NodeTeam **topLosers,
     {
         if(p->TeamOne->teamPoints>p->TeamTwo->teamPoints)
         {
-            push(&(*topWinners),p->TeamOne);
-            push(&(*topLosers),p->TeamTwo);
+            p->TeamOne->next=*topWinners;
+            *topWinners=p->TeamOne;
+
+            p->TeamTwo->next=*topLosers;
+            *topLosers=p->TeamTwo;
+
             p->TeamOne->teamPoints++;
             addPointToPlayers(p->TeamOne,numPlayers);
         }
         else
         {
-            push(&(*topWinners),p->TeamTwo);
-            push(&(*topLosers),p->TeamOne);
+            p->TeamTwo->next=*topWinners;
+            *topWinners=p->TeamTwo;
+
+            p->TeamOne->next=*topLosers;
+            *topLosers=p->TeamOne;
+
             p->TeamTwo->teamPoints++;
             addPointToPlayers(p->TeamTwo,numPlayers);
         }
@@ -54,7 +62,7 @@ void displayStack(NodeTeam *top, FILE *outputFile)
             fprintf(outputFile," ");
         }
         fprintf(outputFile,"-  ");
-        fprintf(outputFile,"%.2f",p->teamPoints);
+        fprintf(outputFile,"%.2f",p->teamPoints); ///
         if(p->next!=NULL)
         {
             fprintf(outputFile,"\n");

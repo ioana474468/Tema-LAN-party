@@ -12,7 +12,7 @@ int main()
 {
     FILE *cFile,*inputFile,*outputFile;
 
-    cFile=fopen("c.in.txt","rt");
+    cFile=fopen("c.in","rt");
     if(cFile==NULL)
     {
         printf("c.in cannot be open");
@@ -26,13 +26,13 @@ int main()
     }
     fclose(cFile);
 
-    inputFile=fopen("d.in.txt","rt");
+    inputFile=fopen("d.in","rt");
     if(inputFile==NULL )
     {
         printf("d.in cannot be open");
         exit(1);
     }
-    outputFile=fopen("r.out.txt","wt");
+    outputFile=fopen("r.out","wt");
     if(outputFile==NULL )
     {
         printf("r.out cannot be open");
@@ -91,10 +91,6 @@ int main()
             }
             fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
             displayQueueMatches(QueueMatches,outputFile);
-            while(topWinners!=NULL)
-            {
-                pop(&topWinners);
-            }
             topWinners=NULL;
             playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
             fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
@@ -108,20 +104,16 @@ int main()
             deleteQueue(QueueMatches);
         }
         free(topWinners);
-        free(topLosers);
-
     }
 
     NodeBST *rootBST=NULL;
 
     if((*(c+3))==1)
     {
-        for(int i=0; i<8; i++)
+        for(NodeTeam *p=top8; p!=NULL; p=p->next)
         {
-            rootBST=insertNodeBST(rootBST,top8->teamName,top8->teamPoints,top8->headPlayer);
-            pop(&top8);
+            rootBST=insertNodeBST(rootBST,p);
         }
-        free(top8);
         fprintf(outputFile,"\n\nTOP 8 TEAMS:\n");
         int numNodesPrinted=0;
         reverseInorder(rootBST,outputFile,&numNodesPrinted);
@@ -129,23 +121,18 @@ int main()
 
     if((*(c+4))==1)
     {
-        NodeTeam *v;
-        int index=0;
-        v=(NodeTeam *)malloc(8*sizeof(NodeTeam));
-        addNodesInArray(v,rootBST, &index);
+        top8=NULL;
+        orderTop8(rootBST, &top8);
         NodeBST *rootAVL=NULL;
-        for(int i=0; i<8; i++)
+        for(NodeTeam *p=top8; p!=NULL; p=p->next)
         {
-            rootAVL=insertNodeAVL(rootAVL,(v+i)->teamName,(v+i)->teamPoints,(v+i)->headPlayer);
+            rootAVL=insertNodeAVL(rootAVL,p);
         }
-        free(v);
         fprintf(outputFile,"\n\nTHE LEVEL 2 TEAMS ARE: \n");
         int nr=0;
         printLevel(rootAVL,3,outputFile,&nr);
         freeTree(rootAVL);
     }
-
-
 
     for(int i=0; i<numPlayers; i++)
     {
@@ -155,7 +142,10 @@ int main()
         free(p->player->secondName);
         free(p);
     }
-    free(headListTeams);
+    while(top8!=NULL)
+    {
+        pop(&top8);
+    }
     freeTree(rootBST);
     free(c);
     fclose(inputFile);

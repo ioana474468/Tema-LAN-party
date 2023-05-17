@@ -9,8 +9,8 @@
 #define BST_H
 
 
-NodeBST* newNodeBST(char* tName, float tPoints, NodePlayer *hPlayer);
-NodeBST* insertNodeBST(NodeBST* node, char* tName, float tPoints, NodePlayer *hPlayer);
+NodeBST* newNodeBST(NodeTeam *currentTeam);
+NodeBST* insertNodeBST(NodeBST* node, NodeTeam *currentTeam);
 void reverseInorder(NodeBST *root,FILE *outputFile, int *numNodesPrinted);
 void freeTree(NodeBST *root);
 

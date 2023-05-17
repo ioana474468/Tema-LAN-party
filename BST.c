@@ -3,7 +3,7 @@
 
 
 
-NodeBST* newNodeBST(char* tName, float tPoints, NodePlayer *hPlayer)
+NodeBST* newNodeBST(NodeTeam *currentTeam)
 {
     NodeBST* node=(NodeBST*)malloc(sizeof(NodeBST));
     if(node==NULL)
@@ -11,52 +11,37 @@ NodeBST* newNodeBST(char* tName, float tPoints, NodePlayer *hPlayer)
         printf("Memory error");
         exit(1);
     }
-    node->team=(NodeTeam*)malloc(sizeof(NodeTeam));
-    if(node->team==NULL)
-    {
-        printf("Memory error");
-        exit(1);
-    }
-    node->team->teamName=(char*)malloc((strlen(tName)+1)*sizeof(char));
-    if(node->team->teamName==NULL)
-    {
-        printf("Memory error");
-        exit(1);
-    }
-    node->team->teamPoints=tPoints;
-    strcpy(node->team->teamName,tName);
-    node->team->headPlayer=hPlayer;
+    node->team=currentTeam;
     node->left=node->right=NULL;
     node->height=1;
     return node;
 }
 
-NodeBST* insertNodeBST(NodeBST* node, char* tName, float tPoints, NodePlayer *hPlayer)
+NodeBST* insertNodeBST(NodeBST* node, NodeTeam *currentTeam)
 {
     if(node==NULL)
     {
-        return newNodeBST(tName,tPoints,hPlayer);
+        return newNodeBST(currentTeam);
     }
-    if(tPoints<node->team->teamPoints)
+    if(currentTeam->teamPoints<node->team->teamPoints)
     {
-        node->left=insertNodeBST(node->left,tName,tPoints,hPlayer);
+        node->left=insertNodeBST(node->left,currentTeam);
     }
-    else if(tPoints>node->team->teamPoints)
+    else if(currentTeam->teamPoints>node->team->teamPoints)
     {
-        node->right=insertNodeBST(node->right,tName,tPoints,hPlayer);
+        node->right=insertNodeBST(node->right,currentTeam);
     }
-    else if(tPoints==node->team->teamPoints)
+    else if(currentTeam->teamPoints==node->team->teamPoints)
     {
-        if(strcmp(tName,node->team->teamName)<0)
+        if(strcmp(currentTeam->teamName,node->team->teamName)<0)
         {
-            node->left=insertNodeBST(node->left,tName,tPoints,hPlayer);
+            node->left=insertNodeBST(node->left,currentTeam);
         }
-        else if(strcmp(tName,node->team->teamName)>0)
+        else if(strcmp(currentTeam->teamName,node->team->teamName)>0)
         {
-            node->right=insertNodeBST(node->right,tName,tPoints,hPlayer);
+            node->right=insertNodeBST(node->right,currentTeam);
         }
     }
-
     return node;
 }
 

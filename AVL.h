@@ -7,14 +7,14 @@
 #include "nodes.h"
 
 
-void addNodesInArray(NodeTeam *v,NodeBST *root, int *i);
+void orderTop8(NodeBST *root, NodeTeam **top8);
 
 
 
 int nodeHeight(NodeBST *root);
 int updateHeight(NodeBST *root);
 
-NodeBST *insertNodeAVL(NodeBST *node, char *tName, float tPoints, NodePlayer *hPlayer);
+NodeBST *insertNodeAVL(NodeBST *node, NodeTeam *currentTeam);
 
 NodeBST *RightRotation(NodeBST *z);
 NodeBST *LeftRotation(NodeBST *z);

@@ -16,6 +16,7 @@ void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *i
         }
         addFirstInListTeams(headListTeams,bufferTeamName,*headListPlayers);
         (*headListTeams)->teamPoints=(float)totalPoints/(*numPlayers);
+        ///(*headListTeams)->teamPoints=floor((float)totalPoints*1000/(*numPlayers))/1000;
     }
 }
 

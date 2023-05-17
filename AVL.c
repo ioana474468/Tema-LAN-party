@@ -1,26 +1,16 @@
 #include "AVL.h"
 #include "BST.h"
 
-void addNodesInArray(NodeTeam *v, NodeBST *root, int *i)
+void orderTop8(NodeBST *root, NodeTeam **top8)
 {
     if(root!=NULL)
     {
-        addNodesInArray(v,root->right, i);
-
-        (v+(*i))->teamPoints=root->team->teamPoints;
-        (v+(*i))->headPlayer=root->team->headPlayer;
-        (v+(*i))->teamName=(char*)malloc((strlen(root->team->teamName)+1)*sizeof(char));
-        if((v+(*i))->teamName==NULL)
-        {
-            printf("Memory error");
-            exit(1);
-        }
-        strcpy((v+(*i))->teamName,root->team->teamName);
-        (*i)++;
-        addNodesInArray(v,root->left, i);
+        orderTop8(root->left,top8);
+        root->team->next=*top8;
+        *top8=root->team;
+        orderTop8(root->right,top8);
     }
 }
-
 
 int nodeHeight(NodeBST *root)
 {
@@ -67,51 +57,42 @@ NodeBST *RLRotation(NodeBST *z)
     return LeftRotation(z);
 }
 
-NodeBST *insertNodeAVL(NodeBST *node, char *tName, float tPoints, NodePlayer *hPlayer) ///
+NodeBST *insertNodeAVL(NodeBST *node, NodeTeam *currentTeam)
 {
     if(node==NULL)
     {
-        return newNodeBST(tName,tPoints,hPlayer);
+        return newNodeBST(currentTeam);
     }
-    if(tPoints<node->team->teamPoints)
+    if(currentTeam->teamPoints<node->team->teamPoints)
     {
-        node->left=insertNodeAVL(node->left,tName,tPoints,hPlayer);
+        node->left=insertNodeAVL(node->left,currentTeam);
     }
-    else if(tPoints>node->team->teamPoints)
+    else if(currentTeam->teamPoints>node->team->teamPoints)
     {
-        node->right=insertNodeAVL(node->right,tName,tPoints,hPlayer);
+        node->right=insertNodeAVL(node->right,currentTeam);
     }
-    else if(tPoints==node->team->teamPoints)
+    else if(currentTeam->teamPoints==node->team->teamPoints)
     {
-        if(strcmp(tName,node->team->teamName)<0)
+        if(strcmp(currentTeam->teamName,node->team->teamName)<0)
         {
-            node->left=insertNodeAVL(node->left,tName,tPoints,hPlayer);
+            node->left=insertNodeAVL(node->left,currentTeam);
         }
-        else if(strcmp(tName,node->team->teamName)>0)
+        else if(strcmp(currentTeam->teamName,node->team->teamName)>0)
         {
-            node->right=insertNodeAVL(node->right,tName,tPoints,hPlayer);
+            node->right=insertNodeAVL(node->right,currentTeam);
         }
     }
     else
     {
         return node;
     }
-
-
     node->height=updateHeight(node);
     int k=nodeHeight(node->left)-nodeHeight(node->right);
 
-    /*
-    if(k>1 && tPoints<node->left->team->teamPoints ) return RightRotation(node); ///LL
-    if(k<-1 && tPoints>node->right->team->teamPoints) return LeftRotation(node); ///RR
-    if(k>1 && tPoints>node->left->team->teamPoints ) return LRRotation(node); ///LR
-    if(k<-1 && tPoints<node->right->team->teamPoints ) return RLRotation(node); ///RL
-        */
-
-    if(k>1 && (tPoints<node->left->team->teamPoints || (tPoints==node->left->team->teamPoints && strcmp(tName,node->team->teamName)<0))) return RightRotation(node); ///LL
-    if(k<-1 && (tPoints>node->right->team->teamPoints || (tPoints==node->right->team->teamPoints && strcmp(tName,node->team->teamName)>0))) return LeftRotation(node); ///RR
-    if(k>1 && (tPoints>node->left->team->teamPoints || (tPoints==node->left->team->teamPoints && strcmp(tName,node->team->teamName)>0))) return LRRotation(node); ///LR
-    if(k<-1 && (tPoints<node->right->team->teamPoints || (tPoints==node->right->team->teamPoints && strcmp(tName,node->team->teamName)<0))) return RLRotation(node); ///RL
+    if(k>1 && (currentTeam->teamPoints<node->left->team->teamPoints || (currentTeam->teamPoints==node->left->team->teamPoints && strcmp(currentTeam->teamName,node->left->team->teamName)<0))) return RightRotation(node); ///LL
+    if(k<-1 && (currentTeam->teamPoints>node->right->team->teamPoints || (currentTeam->teamPoints==node->right->team->teamPoints && strcmp(currentTeam->teamName,node->right->team->teamName)>0))) return LeftRotation(node); ///RR
+    if(k>1 && (currentTeam->teamPoints>node->left->team->teamPoints || (currentTeam->teamPoints==node->left->team->teamPoints && strcmp(currentTeam->teamName,node->left->team->teamName)>0))) return LRRotation(node); ///LR
+    if(k<-1 && (currentTeam->teamPoints<node->right->team->teamPoints || (currentTeam->teamPoints==node->right->team->teamPoints && strcmp(currentTeam->teamName,node->right->team->teamName)<0))) return RLRotation(node); ///RL
 
     return node;
 }
