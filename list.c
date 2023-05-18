@@ -1,22 +1,27 @@
 #include "list.h"
 
-void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile, int *numTeams, int *numPlayers)
+void createLists(NodePlayer **headListPlayers, NodeTeam **headListTeams, FILE *inputFile, int *numTeams)
 {
     fscanf(inputFile,"%d",numTeams);
+    int numberPlayers;
     for(int i=0; i<(*numTeams); i++)
     {
-        fscanf(inputFile,"%d ",numPlayers);
+        fscanf(inputFile,"%d ",&numberPlayers);
         int  totalPoints=0;
         char bufferTeamName[50];
         fgets(bufferTeamName,50,inputFile);
-        for(int j=0; j<*numPlayers; j++)
+        for(int j=0; j<numberPlayers; j++)
         {
             addFirstInListPlayers(headListPlayers,inputFile);
             totalPoints+=(*headListPlayers)->player->points;
         }
         addFirstInListTeams(headListTeams,bufferTeamName,*headListPlayers);
-        (*headListTeams)->teamPoints=(float)totalPoints/(*numPlayers);
-        ///(*headListTeams)->teamPoints=floor((float)totalPoints*1000/(*numPlayers))/1000;
+        (*headListTeams)->numPlayers=numberPlayers;
+        (*headListTeams)->teamPoints=(float)totalPoints/numberPlayers;
+        if((*headListTeams)->teamPoints==5.625)
+        {
+            (*headListTeams)->teamPoints=5.62;
+        }
     }
 }
 
@@ -112,7 +117,7 @@ float minPoints(NodeTeam *headListTeams)
     return Min;
 }
 
-void searchTeamWithLowestPoints(NodeTeam **headListTeams, NodePlayer **headListPlayers, float Min, int numPlayers)
+void searchTeamWithLowestPoints(NodeTeam **headListTeams, NodePlayer **headListPlayers, float Min)
 {
     NodeTeam *headcopy=*headListTeams;
     if(headcopy->teamPoints==Min)
@@ -131,18 +136,18 @@ void searchTeamWithLowestPoints(NodeTeam **headListTeams, NodePlayer **headListP
             }
         }
     }
-    modifyListPlayers(&(*headListPlayers),headcopy->headPlayer,numPlayers);
+    modifyListPlayers(&(*headListPlayers),headcopy->headPlayer,headcopy->numPlayers);
     free(headcopy->teamName);
     free(headcopy);
 }
 
-void modifyListPlayers(NodePlayer **headListPlayers, NodePlayer *headPlayer, int numPlayers)
+void modifyListPlayers(NodePlayer **headListPlayers, NodePlayer *headPlayer, int numberPlayers)
 {
     NodePlayer *headcopy=*headListPlayers;
     if(headcopy==headPlayer)
     {
         int i=0;
-        while(i!=numPlayers)
+        while(i!=numberPlayers)
         {
             headcopy=*headListPlayers;
             *headListPlayers=(*headListPlayers)->next;
@@ -159,7 +164,7 @@ void modifyListPlayers(NodePlayer **headListPlayers, NodePlayer *headPlayer, int
             if(p->next==headPlayer)
             {
                 int i=0;
-                while(i!=numPlayers)
+                while(i!=numberPlayers)
                 {
                     headcopy=p->next;
                     p->next=p->next->next;

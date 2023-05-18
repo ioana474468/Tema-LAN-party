@@ -9,5 +9,4 @@ struct Player
 };
 typedef struct Player Player;
 
-#endif /* PLAYER_H */
-
+#endif

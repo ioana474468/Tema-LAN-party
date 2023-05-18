@@ -11,6 +11,7 @@ typedef struct NodePlayer NodePlayer;
 struct NodeTeam
 {
     char *teamName;
+    int numPlayers;
     float teamPoints;
     NodePlayer *headPlayer;
     struct NodeTeam *next;
@@ -38,9 +39,6 @@ struct NodeBST
     struct NodeBST *left, *right;
 };
 typedef struct NodeBST NodeBST;
-
-
-
 
 
 #endif /* NODES_H */

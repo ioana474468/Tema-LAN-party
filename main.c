@@ -45,7 +45,7 @@ int main()
 
     if((*c)==1)
     {
-        createLists(&headListPlayers,&headListTeams,inputFile,&numTeams,&numPlayers);
+        createLists(&headListPlayers,&headListTeams,inputFile,&numTeams);
         if((*(c+1))==0) displayListTeams(headListTeams,outputFile);
     }
 
@@ -61,7 +61,7 @@ int main()
         }
         while(numTeamsNeeded!=numTeams)
         {
-            searchTeamWithLowestPoints(&headListTeams,&headListPlayers,minPoints(headListTeams),numPlayers);
+            searchTeamWithLowestPoints(&headListTeams,&headListPlayers,minPoints(headListTeams));
             numTeams--;
         }
         numTeams=numTeamsNeeded;
@@ -92,13 +92,13 @@ int main()
             fprintf(outputFile,"\n\n--- ROUND NO:%d\n",roundNum);
             displayQueueMatches(QueueMatches,outputFile);
             topWinners=NULL;
-            playMatches(QueueMatches,&topWinners,&topLosers,numPlayers);
+            playMatches(QueueMatches,&topWinners,&topLosers);
             fprintf(outputFile,"\nWINNERS OF ROUND NO:%d\n",roundNum);
             roundNum++;
             displayStack(topWinners,outputFile);
             while(topLosers!=NULL)
             {
-                modifyListPlayers(&headListPlayers,topLosers->headPlayer,numPlayers);
+                modifyListPlayers(&headListPlayers,topLosers->headPlayer,topLosers->numPlayers);
                 pop(&topLosers);
             }
             deleteQueue(QueueMatches);

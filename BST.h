@@ -8,7 +8,6 @@
 #ifndef BST_H
 #define BST_H
 
-
 NodeBST* newNodeBST(NodeTeam *currentTeam);
 NodeBST* insertNodeBST(NodeBST* node, NodeTeam *currentTeam);
 void reverseInorder(NodeBST *root,FILE *outputFile, int *numNodesPrinted);

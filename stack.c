@@ -1,7 +1,7 @@
 #include "stack.h"
 
 
-void playMatches(Queue *QueueMatches,NodeTeam **topWinners,NodeTeam **topLosers, int numPlayers)
+void playMatches(Queue *QueueMatches,NodeTeam **topWinners,NodeTeam **topLosers)
 {
     for(Match *p=QueueMatches->front; p!=NULL; p=p->next)
     {
@@ -14,7 +14,7 @@ void playMatches(Queue *QueueMatches,NodeTeam **topWinners,NodeTeam **topLosers,
             *topLosers=p->TeamTwo;
 
             p->TeamOne->teamPoints++;
-            addPointToPlayers(p->TeamOne,numPlayers);
+            addPointToPlayers(p->TeamOne,p->TeamOne->numPlayers);
         }
         else
         {
@@ -25,14 +25,14 @@ void playMatches(Queue *QueueMatches,NodeTeam **topWinners,NodeTeam **topLosers,
             *topLosers=p->TeamOne;
 
             p->TeamTwo->teamPoints++;
-            addPointToPlayers(p->TeamTwo,numPlayers);
+            addPointToPlayers(p->TeamTwo,p->TeamTwo->numPlayers);
         }
     }
 }
-void addPointToPlayers(NodeTeam *currentTeam, int numPlayers)
+void addPointToPlayers(NodeTeam *currentTeam, int numberPlayers)
 {
     NodePlayer *nodeCopy=currentTeam->headPlayer;
-    for(int i=0; i<numPlayers; i++)
+    for(int i=0; i<numberPlayers; i++)
     {
         nodeCopy->player->points++;
         nodeCopy=nodeCopy->next;
@@ -62,7 +62,7 @@ void displayStack(NodeTeam *top, FILE *outputFile)
             fprintf(outputFile," ");
         }
         fprintf(outputFile,"-  ");
-        fprintf(outputFile,"%.2f",p->teamPoints); ///
+        fprintf(outputFile,"%.2f",p->teamPoints);
         if(p->next!=NULL)
         {
             fprintf(outputFile,"\n");

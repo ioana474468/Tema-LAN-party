@@ -5,12 +5,8 @@
 #include "player.h"
 #include "nodes.h"
 
-
-
 Queue *createQueueMatches();
-
 void enQueueMatches(Queue *QueueMatches, NodeTeam *firstTeam, NodeTeam *secondTeam);
 void deleteQueue(Queue* q);
-
 void displayQueueMatches(Queue *QueueMatches, FILE *outputFile);
 
