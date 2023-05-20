@@ -101,7 +101,7 @@ NodeBST *insertNodeAVL(NodeBST *node, NodeTeam *currentTeam)
 void printLevel(NodeBST* root, int level,FILE * outputFile, int *numNodesPrinted)
 {
     if(root==NULL) return;
-    if(level==1)
+    if(level==0)
     {
         fprintf(outputFile,"%s",root->team->teamName);
         if(*numNodesPrinted<3)
@@ -110,7 +110,7 @@ void printLevel(NodeBST* root, int level,FILE * outputFile, int *numNodesPrinted
             (*numNodesPrinted)++;
         }
     }
-    else if(level>1)
+    else if(level>0)
     {
         printLevel(root->right,level-1,outputFile,numNodesPrinted);
         printLevel(root->left, level-1,outputFile,numNodesPrinted);

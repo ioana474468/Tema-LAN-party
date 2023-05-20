@@ -130,7 +130,7 @@ int main()
         }
         fprintf(outputFile,"\n\nTHE LEVEL 2 TEAMS ARE: \n");
         int nr=0;
-        printLevel(rootAVL,3,outputFile,&nr);
+        printLevel(rootAVL,2,outputFile,&nr);
         freeTree(rootAVL);
     }
 
