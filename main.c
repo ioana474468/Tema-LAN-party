@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     FILE *cFile,*inputFile,*outputFile;
     if(argc<4)
     {
-        printf("bruh");
+        printf("Not enough arguments");
         return 1;
     }
 
