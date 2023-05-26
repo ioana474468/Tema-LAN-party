@@ -8,11 +8,16 @@
 #include "BST.h"
 #include "AVL.h"
 
-int main()
+int main(int argc, char *argv[])
 {
     FILE *cFile,*inputFile,*outputFile;
+    if(argc<4)
+    {
+        printf("bruh");
+        return 1;
+    }
 
-    cFile=fopen("c.in","rt");
+    cFile=fopen(argv[1],"rt");
     if(cFile==NULL)
     {
         printf("c.in cannot be open");
@@ -26,13 +31,13 @@ int main()
     }
     fclose(cFile);
 
-    inputFile=fopen("d.in","rt");
+    inputFile=fopen(argv[2],"rt");
     if(inputFile==NULL )
     {
         printf("d.in cannot be open");
         exit(1);
     }
-    outputFile=fopen("r.out","wt");
+    outputFile=fopen(argv[3],"wt");
     if(outputFile==NULL )
     {
         printf("r.out cannot be open");
@@ -146,6 +151,7 @@ int main()
     {
         pop(&top8);
     }
+    fprintf(outputFile,"\n");
     freeTree(rootBST);
     free(c);
     fclose(inputFile);
