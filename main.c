@@ -11,10 +11,10 @@
 int main(int argc, char *argv[])
 {
     FILE *cFile,*inputFile,*outputFile;
-    if(argc<4)
+    if(argc!=4)
     {
-        printf("Not enough arguments");
-        return 1;
+        printf("lanParty c_file input_file output_file\n");
+        exit(1);
     }
 
     cFile=fopen(argv[1],"rt");
@@ -151,7 +151,6 @@ int main(int argc, char *argv[])
     {
         pop(&top8);
     }
-    fprintf(outputFile,"\n");
     freeTree(rootBST);
     free(c);
     fclose(inputFile);
